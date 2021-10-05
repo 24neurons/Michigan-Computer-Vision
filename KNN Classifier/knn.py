@@ -9,27 +9,32 @@ def compute_distance_two_loop(x_train , x_test):
     Helps on compute_distance_two_loops : 
     This function just implicitly loop through the training set and test set 
     to compute SQUARED EUCLID distance between each training examples and tes
-    examples
+    examples . Images should be flattened out and treated as vector
 
     Inputs : 
     x_train : [num_train x H x W x C] tensor , contain information of num_train 
-    training examples
+    training examples . dtype = 'int8'
     x_test  : [num_test x H x W x C] tensor , contain information of num_test test 
-    examples
+    examples , dtype = 'int8'
 
     Returns : 
     dist    : [num_train x num_test] tensor , where the entry dist[i][j] stores 
     distance of train[i] and test[j]
     
     """
+    num_train = x_train.shape[0]
+    num_test  = x_test.shape[0]
 
-    dist  = np.zeros
+    x_train   = tf.reshape(x_train , shape = (num_train , -1))
+    x_test    = tf.reshape(x_test  , shape = (num_test  , -1))
+
+    dist      = tf.zeros((num_train , num_test) , dtype = 'uint8')
 
     for (i , train_ex) in enumerate(x_train):
         for(j , test_ex) in enumerate(x_test):
-            dist[i][j] = sum((train_x - test_x)**2) 
+            dist[i][j] = tf.sqrt( ((train_ex - test_ex)**2).sum() )
    
-    return dist[i][j]
+    return dist
 
 def compute_distance_one_loop(x_train , x_test):
     """
@@ -39,19 +44,61 @@ def compute_distance_one_loop(x_train , x_test):
     and return the result on dist
 
     Inputs : 
-    x_train : [num_train x H x W x C] tensor , contain information of num_train 
-    training examples
-    x_test  : [num_test x H x W x C] tensor , contain information of num_test test 
-    examples
+    x_train : [num_train x H x W x C] tensor , dtype = 'uint8'
+    x_test  : [num_test x H x W x C] tensor , contain information of num_test, 
+    dtype = 'int8'
+
 
     Returns : 
     dist    : [num_train x num_test] tensor , where the entry dist[i][j] stores 
     distance of train[i] and test[j]
     """
 
-    pass
-def compute_distances_no_loops(x_train , x_test):
+    num_train = x_train.shape[0]
+    num_test  = x_test.shape[0]
 
+    x_train   = tf.reshape(x_train , (x_train.shape[0] , -1))
+    x_test    = tf.reshape(x_test  , (x_test.shape[0]  , -1))
+    dist      = tf.zeros((num_train , num_test) , dtype = 'uint8')
+
+
+    for (i_train , x_train_ ) in x_train:
+        dist[i] = tf.sqrt( ((x_train - x_test)**2 ).sum(axis = 1) )
+
+    return dist
+
+def compute_distances_no_loops(x_train , x_test):
+    """
+    This function computes distance between x_train and x_test by vectorization.
+    Both input will be multiplied with a intermediate matrix to press them down.
+
+
+    Inputs :
+    x_train : [num_train x H x W x C] tensor , dtype = 'uint8' 
+    x_test  : [num_test x H x W x C] tensor , dtype = 'uint8'
+
+    Returns : 
+    dist    : [num_train x num_test] tensor , dtype = 'uint8'
+    with dist[i][j] is the squared euclidian distance of train[i] and test[j]
+
+    """
+
+    num_train = x_train.shape[0]
+    num_test  = x_test.shape[0]
+
+
+    x_train   = tf.reshape(x_train , (x_train.shape[0] , -1))
+    x_test    = tf.reshape(x_test  , (x_test.shape[0] ,  -1))
+    dist      = tf.zeros((num_train , num_test) , dtype = 'uint8')
+    img_size  = x_train.shape[1]
+
+    inter_matrix = tf.ones((num_train , num_test , image_size) , dtype = 'uint8')
+
+    train_to_matrix  = (x_train * inter_matrix)
+    test_to_matrix   = (x_test * tf.transpose(inter , perm = [1 , 0 , 2]))
+    dist             = ( (train_to_matrix - test_to_matrix)**2 ).sum(axis = 1)
+
+    return dist
 
 class KnnClassifier
     def __init__(self , x_train , y_train)
@@ -60,7 +107,13 @@ class KnnClassifier
 
     def predict(self , x_test , k = 1 )
     
-    def check_accuracy(self , x_test , y_test) 
+    def check_accuracy(self , x_test , y_test , k = 1)
+
+        y_pred = self.predict(x_test , k)
+
+        return (y_pred == y_test).nonzero()
+        
+
 
 
 def knn_cross_validate(x_train , y_train , x_test , y_test , kfolds = None , k_choices)
