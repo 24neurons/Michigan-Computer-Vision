@@ -4,7 +4,7 @@ import tensorflow as tf
 def hello():
     print("Listen to Gracie Abrams' Feels Like now")
 
-def compute_distance_two_loop(x_train , x_test):
+def compute_distance_two_loops(x_train , x_test):
     """
     Helps on compute_distance_two_loops : 
     This function just implicitly loop through the training set and test set 
@@ -18,7 +18,7 @@ def compute_distance_two_loop(x_train , x_test):
     examples , dtype = 'int8'
 
     Returns : 
-    dist    : [num_train x num_test] tensor , where the entry dist[i][j] stores 
+    dist    : [num_train x num_test] numpy array, where the entry dist[i][j] stores 
     distance of train[i] and test[j]
     
     """
@@ -28,11 +28,11 @@ def compute_distance_two_loop(x_train , x_test):
     x_train   = tf.reshape(x_train , shape = (num_train , -1))
     x_test    = tf.reshape(x_test  , shape = (num_test  , -1))
 
-    dist      = tf.zeros((num_train , num_test) , dtype = 'uint8')
+    dist      = np.zeros((num_train , num_test) , dtype =  'float32')
 
     for (i , train_ex) in enumerate(x_train):
         for(j , test_ex) in enumerate(x_test):
-            dist[i][j] = tf.sqrt( tf.reduce_sum((train_ex - test_ex)**2) )
+            dist[i][j] =np.sqrt(np.sum( (train_ex - test_ex)**2 ) ) 
    
     return dist
 
@@ -59,11 +59,11 @@ def compute_distance_one_loop(x_train , x_test):
 
     x_train   = tf.reshape(x_train , (x_train.shape[0] , -1))
     x_test    = tf.reshape(x_test  , (x_test.shape[0]  , -1))
-    dist      = tf.zeros((num_train , num_test) , dtype = 'uint8')
+    dist      = np.zeros((num_train , num_test) , dtype = 'float32')
 
 
     for (i_train , x_train_ ) in x_train:
-        dist[i] = tf.sqrt( tf.reduce_sum( (x_train - x_test)**2  , axis = 1) )
+        dist[i] = np.sqrt( np.sum( (x_train - x_test)**2  , axis = 1) )
     return dist
 
 def compute_distances_no_loops(x_train , x_test):
@@ -88,13 +88,14 @@ def compute_distances_no_loops(x_train , x_test):
 
     x_train   = tf.reshape(x_train , (x_train.shape[0] , -1))
     x_test    = tf.reshape(x_test  , (x_test.shape[0] ,  -1))
-    dist      = tf.zeros((num_train , num_test) , dtype = 'uint8')
+    dist      = tf.zeros((num_train , num_test) , dtype = x_train.dtype)
     img_size  = x_train.shape[1]
 
-    inter_matrix = tf.ones((num_train , num_test , img_size) , dtype = 'uint8')
+    inter_matrix = tf.ones((num_train , num_test , img_size) , dtype = x_train.dtype)
 
-    train_to_matrix  = tf.transpose( tf.multiply(x_train , tf.tranpose(inter , perm = [1 , 0 , 2])) , perm = [0 , 1, 2] )
-    test_to_matrix   = tf.multiply(x_test , inter)
+    train_to_matrix  = tf.transpose( tf.multiply(x_train , tf.transpose(inter_matrix , perm = [1 , 0 , 2])) , perm = [1 , 0, 2] )
+    test_to_matrix   = tf.multiply(x_test , inter_matrix)
+
     dist             = tf.sqrt( tf.reduce_sum( (train_to_matrix - test_to_matrix)**2 , axis = 2 ) )
     return dist
     
