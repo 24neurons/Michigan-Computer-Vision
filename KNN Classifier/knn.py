@@ -32,7 +32,7 @@ def compute_distance_two_loop(x_train , x_test):
 
     for (i , train_ex) in enumerate(x_train):
         for(j , test_ex) in enumerate(x_test):
-            dist[i][j] = tf.sqrt( ((train_ex - test_ex)**2).sum() )
+            dist[i][j] = tf.sqrt( tf.reduce_sum((train_ex - test_ex)**2) )
    
     return dist
 
@@ -63,8 +63,7 @@ def compute_distance_one_loop(x_train , x_test):
 
 
     for (i_train , x_train_ ) in x_train:
-        dist[i] = tf.sqrt( ((x_train - x_test)**2 ).sum(axis = 1) )
-
+        dist[i] = tf.sqrt( tf.reduce_sum( (x_train - x_test)**2  , axis = 1) )
     return dist
 
 def compute_distances_no_loops(x_train , x_test):
@@ -96,7 +95,7 @@ def compute_distances_no_loops(x_train , x_test):
 
     train_to_matrix  = tf.transpose( tf.multiply(x_train , tf.tranpose(inter , perm = [1 , 0 , 2])) , perm = [0 , 1, 2] )
     test_to_matrix   = tf.multiply(x_test , inter)
-    dist             = tf.sqrt((train_to_matrix - test_to_matrix)**2 ).sum(axis = 1))
+    dist             = tf.sqrt( tf.reduce_sum( (train_to_matrix - test_to_matrix)**2 , axis = 2 ) )
     return dist
     
 """
