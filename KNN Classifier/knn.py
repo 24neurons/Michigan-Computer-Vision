@@ -92,14 +92,14 @@ def compute_distances_no_loops(x_train , x_test):
     dist      = tf.zeros((num_train , num_test) , dtype = 'uint8')
     img_size  = x_train.shape[1]
 
-    inter_matrix = tf.ones((num_train , num_test , image_size) , dtype = 'uint8')
+    inter_matrix = tf.ones((num_train , num_test , img_size) , dtype = 'uint8')
 
-    train_to_matrix  = (x_train * inter_matrix)
-    test_to_matrix   = (x_test * tf.transpose(inter , perm = [1 , 0 , 2]))
-    dist             = ( (train_to_matrix - test_to_matrix)**2 ).sum(axis = 1)
-
+    train_to_matrix  = tf.transpose( tf.multiply(x_train , tf.tranpose(inter , perm = [1 , 0 , 2])) , perm = [0 , 1, 2] )
+    test_to_matrix   = tf.multiply(x_test , inter)
+    dist             = tf.sqrt((train_to_matrix - test_to_matrix)**2 ).sum(axis = 1))
     return dist
-
+    
+"""
 class KnnClassifier
     def __init__(self , x_train , y_train)
         self.x_train = x_train
@@ -118,7 +118,7 @@ class KnnClassifier
 
 def knn_cross_validate(x_train , y_train , x_test , y_test , kfolds = None , k_choices)
 
-
+"""
 
 
 
