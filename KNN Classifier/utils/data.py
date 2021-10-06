@@ -23,7 +23,7 @@ def extract_samples(dset , num = None):
     X = tf.convert_to_tensor(dset[0] , name = 'data')
     y = tf.convert_to_tensor(dset[1] , name = 'label')
 
-    return X[:num] , y[:num]
+    return X[:num] / 255, y[:num] / 255
 def data_loading(num_train , num_test):
     '''
     Note : Tensorflow datasets are often stored in the format : tf.dataset.Dataset
