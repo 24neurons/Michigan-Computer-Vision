@@ -139,7 +139,7 @@ class KnnClassifier:
 
         y_pred = self.predict(x_test , k)
 
-        return (y_pred == y_test).numpy().nonzero()
+        return sum( (y_pred == y_test) ).numpy()
 
 def knn_cross_validate(x_train , y_train , num_folds = 5, k_list = [1 , 2, 3]):
     
@@ -195,7 +195,8 @@ def knn_cross_validate(x_train , y_train , num_folds = 5, k_list = [1 , 2, 3]):
             
             sub_classifier = KnnClassifier(train_X , train_y)
             k_to_accuracy[k].append(sub_classifier.check_accuracy(cv_x , cv_y))
-        return k_to_accuracy
+    
+    return k_to_accuracy
         
 
 
