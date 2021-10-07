@@ -29,7 +29,7 @@ def visualize(list_image_tensor, class_dict , sper_row):
 
     for (idxs , image) in enumerate(list_image_tensor):
 
-        r_id = idxs / sper_row      # row id of it on the subplots
+        r_id = int ( idxs / sper_row )     # row id of it on the subplots
         c_id = idxs % sper_row      # col id of it on the subplots
         ax[r_id][c_id].imshow(image.numpy())
 
