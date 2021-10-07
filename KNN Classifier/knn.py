@@ -149,9 +149,36 @@ def knn_cross_validate(x_train , y_train , num_folds = 5, k_list = [1 , 2, 3]):
     folds, use the remaining fold to test performance 
 
     Inputs : 
-    x_train : [num_train x H x W x C] tensor, contain the training information
-    y_train : [num_test  x H x W x C]
-    """
+    x_train   : [num_train x H x W x C] tensor, contain the training information
+    y_train   : [num_train] tensor , the paired label for x_train
+    num_folds : the number of folds to divide them into
+    k_list    : list of candicated k to evaluate
+    Returns   :
+    k_to_accuracy : a dict where the keys are elements of k_list , and the element of
+    each keys are values of accuracy that the trained knn model on num_folds - 1 fold
+    give on the remaining fold
+    For examples : initally we have the of the 'k' key is : 'k' : []
+    a_1   a_2    a_3     a_4
+
+    as 4 folds divided equally in size from x_train , and the paired labels are
+    b_1   b_2    b_3     b_4
+
+    If we're evaluating the k = 5 , then we first, we train a model Z where it use
+    X_train = [a_1 a_2 a_3] , 
+    y_train = [b_1 b_2 b_3] 
+    as the training data , and get he accuaracy A_1 evaluated on the test set : 
+    X_test  = [a_4]
+    y_train = [b_4]
+    we got the result A_1 , and append it to the list of k = 5 : 
+    'k' = [A_1 , ]
+
+    and then we go on, use a_3 as the test set , concatnate other threes into a test set, 
+    got A_2 accuracy and append it, we got : 
+    'k' = [A_1 , A_2 ] , go on and on , we got 'k' :[A_1 , A_2 , A_3 , A_4] as the final result 
+    for k.
+
+    We can move on to the next k and evaluate them , eventually end up with a dict
+     """
     x_train_fold = []
     y_train_fold = []
     num_train    = x_train.shape[0]
