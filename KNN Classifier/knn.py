@@ -131,11 +131,11 @@ class KnnClassifier:
         self.x_train = x_train
         self.y_train = y_train
 
-    def predict(self , x_test , k = 1 ):
+    def predict(self , x_test , k):
         distance = compute_distance_no_loop(self.x_train , x_test)
         y_pred   = predict_label(distance , self.y_train)
         return y_pred
-    def check_accuracy(self , x_test , y_test , k = 1):
+    def check_accuracy(self , x_test , y_test , k):
 
         y_pred = self.predict(x_test , k)
 
