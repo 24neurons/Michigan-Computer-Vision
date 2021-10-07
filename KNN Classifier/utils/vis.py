@@ -34,7 +34,7 @@ def visualize(list_image_tensor, class_dict , sper_row):
         ax[r_id][c_id].imshow(image.numpy())
 
     for (class_row , class_name) in enumerate(class_dict):
-        ax[class_row][0].text(-4 , image_half_height , class_name) 
+        ax[class_row][0].text(-image_half_height * 2 , image_half_height , class_name) 
         # this loop print the class name
         
     fig.tight_layout(pad = 0.001)
