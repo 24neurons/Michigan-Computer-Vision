@@ -59,7 +59,7 @@ def random_samples(X , y , class_dict , samples_per_row):
     Samples = []
 
     for cur_y in range(len(class_dict)):
-        idxs = (y == cur_y).nonzero()[0]
+        idxs = sum( (y == cur_y).numpy() )
         choosen_idxs = np.random.choice(idxs , size = samples_per_row)
 
         choosen_Xs    =  tf.unstack(X[choosen_idxs])

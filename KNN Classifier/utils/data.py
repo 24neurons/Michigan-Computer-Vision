@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-def extract_samples(dset , num = None):
+def extract_samples(dset , num = None ):
     '''
     Convert the dset from tensorflow.data.Datasets to tensors and sample first
     num samples
@@ -23,7 +23,7 @@ def extract_samples(dset , num = None):
     X = tf.convert_to_tensor(dset[0] , name = 'data')
     y = tf.convert_to_tensor(dset[1] , name = 'label')
 
-    return X[:num] / 255, y[:num] / 255
+    return X[:num] / 255, y[:num] 
 def data_loading(num_train , num_test):
     '''
     Note : Tensorflow datasets are often stored in the format : tf.dataset.Dataset
