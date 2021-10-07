@@ -115,7 +115,7 @@ def predict_label(distance , y_train , k = 1):
     #the lowest 
     #tranpose because tf.math.top_k computes k highest on the last axis, so we
     #need to make test indexes on the last axis
-    k_nearest_distance      = tf.math.top_k(-distance.transpose() , k).indices.numpy()
+    k_nearest_distance      = tf.math.top_k(-tf.transpose(distance , perm = [1 , 0] ) , k).indices.numpy()
     k_nearest_label         = y_train.numpy()[k_nearest_distance]
    
    
